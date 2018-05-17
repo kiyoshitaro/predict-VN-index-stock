@@ -15,6 +15,7 @@ from sklearn.preprocessing import MinMaxScaler
 from keras.models import Sequential
 from keras.layers import Dense
 from keras.layers import LSTM
+import time
 
 
 
@@ -104,6 +105,7 @@ def forecast_lstm(model, batch_size, X):
     yhat = model.predict(X, batch_size=batch_size)
     return yhat[0,0]
 
+start = time.time()
 series = pd.read_csv('raw_data.csv', 
                   header = None,
                   parse_dates = [0],
@@ -128,71 +130,98 @@ print(differenced.head())
 
 #devide train/test
 train_size = int(np.round(train_size_percentage*datas.size))
-test_size = series-1-  train_size
+test_size = len(series)-1-  train_size
 train, test = supervised_values[0:train_size], supervised_values[train_size:]
 scaler, train_scaled, test_scaled = scale(train, test)
  
 # fit the model
 
 
-
-
-####### set to test #########
-lstm_model = fit_lstm(train_scaled, 1, 10, 4)
-####### set to test #########
-
-
-
-
-# forecast the training dataset to build up state for forecasting
-train_reshaped = train_scaled[:, 0].reshape(len(train_scaled), 1, 1)
+batch_size = 1
+nb_epoch = 10
+neurons = 4
 
 
 
 
+repeats = 20
+error_scores = list()
 
-####### set to test #########
-lstm_model.predict(train_reshaped, batch_size=1)
-####### set to test #########
-
-
-
-
-
-
-
-#predict for test data
-predictions = list()
-for i in range(len(test_scaled)):
-    # make one-step forecast
-    X, y = test_scaled[i, 0:-1], test_scaled[i, -1]
-    yhat = forecast_lstm(lstm_model, 1, X)
-    # invert scaling
-    yhat = invert_scale(scaler, X, yhat)
-    # invert differencing
-    yhat = inverse_difference(datas, yhat, len(test_scaled)+1-i)
-    # store forecast
-    predictions.append(yhat)
-    expected = datas[len(train) + i + 1]
-    print('Month=%d, Predicted=%f, Expected=%f' % (i+1, yhat, expected))
- 
+for r in range(repeats):
+    
+        
+        ####### set to test #########
+    lstm_model = fit_lstm(train_scaled, batch_size,nb_epoch, neurons)
+    ####### set to test #########
     
     
-# report performance
-rmse = math.sqrt(mean_squared_error(datas[-test_size:], predictions))
-print('Test RMSE: %.3f' % rmse)
+    
+    
+    # forecast the training dataset to build up state for forecasting
+    train_reshaped = train_scaled[:, 0].reshape(len(train_scaled), 1, 1)
+    
+    
+
+    
+    ####### set to test #########
+    lstm_model.predict(train_reshaped, batch_size=1)
+    ####### set to test #########
+    
+    
+    
+    
+    
+    
+    
+    #predict for test data
+    predictions = list()
+    for i in range(len(test_scaled)):
+        # make one-step forecast
+        X, y = test_scaled[i, 0:-1], test_scaled[i, -1]
+    
+        yhat = forecast_lstm(lstm_model, 1, X)
+    #    yhat= y
+    
+        # invert scaling
+        yhat = invert_scale(scaler, X, yhat)
+        # invert differencing
+        yhat = inverse_difference(datas, yhat, len(test_scaled)+1-i)
+        # store forecast
+        predictions.append(yhat)
+        expected = datas[len(train) + i + 1]
+#        print('Month=%d, Predicted=%f, Expected=%f' % (i+1, yhat, expected))
+     
+        
+        
+    # report performance
+#    rmse = math.sqrt(mean_squared_error(datas[-test_size:], predictions))
+#    print('Test RMSE: %.3f' % rmse)
 
 
 # line plot of observed vs predicted
 #pyplot.plot(datas[-test_size:])
 
 
-#show data to compare result (a part not full)
-pyplot.plot(datas[-50:])
-pyplot.plot(predictions[-50:])
+    rmse = math.sqrt(mean_squared_error(datas[-test_size:], predictions))
+    print('%d) Test RMSE: %.3f' % (r+1, rmse))
+    error_scores.append(rmse)
+ 
+# summarize results
+results = pd.DataFrame()
+results['rmse'] = error_scores
+print(results.describe())
+results.boxplot()
 pyplot.show()
 
 
+end = time.time()
+elapsed = end - start
+#show data to compare result (a part not full)
+#pyplot.plot(datas[-50:])
+#pyplot.plot(predictions[-50:])
+#pyplot.show()
+
+print("With batch_size = {} ,nb_epoch = {} , neurons = {} in time = {} , Test RMSE: {}".format(batch_size,nb_epoch, neurons,elapsed,rmse))
 #epoch=1000_rmse=
 
 ########################## Test Libarary and code  ##################################
