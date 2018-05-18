@@ -138,8 +138,8 @@ scaler, train_scaled, test_scaled = scale(train, test)
 
 
 batch_size = 1
-nb_epoch = 10
-neurons = 4
+nb_epoch = 3
+neurons = 2
 
 
 
