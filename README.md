@@ -1,47 +1,15 @@
 ﻿# StockPredictionLSTM
-Dự đoán xu thế chỉ số chứng khoán Việt Nam  VN-Index sử dụng hướng tiếp cận RNN
-
-
-
-Sample data plot : 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+Predict VN-index trend approach by  RNNs  
+ 
 
 Step : 
 1. Load the dataset from CSV file.
-2. Transform the dataset to make it suitable for the LSTM model, including:
-1. Transforming the data to a supervised learning problem.
-2. Transforming the data to be stationary.
-3. Transforming the data so that it has the scale -1 to 1.
-3. Fitting a stateful LSTM network model to the training data.
-(Use LSTM with loss='mean_squared_error', optimizer='adam’ , batch_size = 1 ,nb_epoch = 3 , neurons = 2)
-4. Evaluating the static LSTM model on the test data.
-5. Report the performance of the forecasts.
+2. Transforming the data to a supervised learning problem.
+3. Transforming the data to be stationary.
+4. Transforming the data so that it has the scale -1 to 1.
+5. Fitting a stateful LSTM network model to the training data.(Use LSTM with loss='mean_squared_error', optimizer='adam’ , batch_size = 1 ,nb_epoch = 3 , neurons = 2)
+6. Evaluating the static LSTM model on the test data.
+7. Report the performance of the forecasts.
 
 
 
@@ -70,14 +38,14 @@ Repeat 20 times (time = 406.21 s ) and use mean_square_error to evaluate :
 20) Test RMSE: 5.580
 
 
-         rmse
-count  20.000000
-mean    5.613534
-std     0.024710
-min     5.574390
-25%     5.590972
-50%     5.618729
-75%     5.635545
-max     5.647541
+         
+count  : 20.000000
+mean   : 5.613534
+std    : 0.024710
+min    : 5.574390
+25%    : 5.590972
+50%    : 5.618729
+75%    : 5.635545
+max    : 5.647541
 
 
