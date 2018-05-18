@@ -1,6 +1,6 @@
-﻿# StockPredictionLSTM
-Predict VN-index trend approach by  RNNs  
- 
+﻿# predict-VN-index-stock
+Predict VN-index trend approached by RNNs(LSTM)
+
 
 Step : 
 1. Load the dataset from CSV file.
