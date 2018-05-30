@@ -20,7 +20,7 @@ import time
 
 
 ####### set to test #########
-train_size_percentage = 0.8
+train_size_percentage = 0.9
 ####### set to test #########
 
 
@@ -138,16 +138,16 @@ scaler, train_scaled, test_scaled = scale(train, test)
 
 
 batch_size = 1
-nb_epoch = 3
-neurons = 2
+nb_epoch = 20
+neurons = 4
 
 
 
 
-repeats = 20
+repeats = 10
 error_scores = list()
 
-for r in range(repeats):
+for r in range(repeats):    
     
         
         ####### set to test #########
@@ -205,6 +205,10 @@ for r in range(repeats):
     rmse = math.sqrt(mean_squared_error(datas[-test_size:], predictions))
     print('%d) Test RMSE: %.3f' % (r+1, rmse))
     error_scores.append(rmse)
+    
+#    pyplot.plot(datas[-50:])
+#    pyplot.plot(predictions[-50:])
+#    pyplot.show()
  
 # summarize results
 results = pd.DataFrame()
